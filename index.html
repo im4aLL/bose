@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery DIV background Slider</title>
+	
+	<link rel="stylesheet" href="demo.css">
+	<link rel="stylesheet" href="src/bose.slider.css">
+
+</head>
+<body>
+
+<div class="container">
+	<div class="bose">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, assumenda, iste, ducimus, animi nesciunt perferendis id deserunt recusandae sed voluptatem perspiciatis illo ratione quae sequi nostrum voluptates fugit fuga adipisci.</p>
+	</div>
+</div>
+	
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="src/bose.slider.js"></script>
+	<script>
+		$(document).ready(function() {
+
+			$(".bose").bose({
+				images : [ "http://lorempixel.com/960/500/sports", "http://lorempixel.com/960/500/fashion", "http://lorempixel.com/960/500/nature"],
+				onComplete : function(){ 
+					console.log("Trigger onComplete!"); 
+				},
+				onSlideStart : function(index){
+					console.log(index + ' destroying'); 
+				},
+				onSlideEnd : function(index){ 
+					console.log(index + ' showed'); 
+				}
+			});
+			
+		});
+	</script>
+
+
+
+</body>
+</html>
