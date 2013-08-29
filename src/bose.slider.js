@@ -21,50 +21,77 @@
     sliding           = null,
     sliderStarted     = false;
 
-    $.fn.bose = function( options ) {
+    var methods = {
+        init : function( options ) { 
 
-        /**
-         * [plugin hooks]
-         * @type {String and Object}
-         */
-    	settings = $.extend({
-            images       : null,
-            onComplete   : function() {},
-            onSlideStart : function() {},
-            onSlideEnd   : function() {},
-            wrapClass    : wrapClass,
-            sliderClass  : sliderClass,
-            holderClass  : holderClass,
-            startIndex   : 0,
-            transition   : 'fade',
-            timeout      : 5,
-            duration     : 2
-        }, options);
+            /**
+             * [plugin hooks]
+             * @type {String and Object}
+             */
+            settings = $.extend({
+                images       : null,
+                onComplete   : function() {},
+                onSlideStart : function() {},
+                onSlideEnd   : function() {},
+                wrapClass    : wrapClass,
+                sliderClass  : sliderClass,
+                holderClass  : holderClass,
+                startIndex   : 0,
+                transition   : 'fade',
+                timeout      : 5,
+                duration     : 2
+            }, options);
 
-        this.each(function(index, el) {
+            this.each(function(index, el) {
 
-            // getting height and width of selector
-            objWH = getWidthHeight(this);
+                // getting height and width of selector
+                objWH = getWidthHeight(this);
 
-            // adding class and wrapper
-            $(this).addClass(settings.sliderClass).wrap('<div class="'+settings.wrapClass+'" />');
-        	
-            // adding image holder
-            $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '"></div>');
+                // adding class and wrapper
+                $(this).addClass(settings.sliderClass).wrap('<div class="'+settings.wrapClass+'" />');
+                
+                // adding image holder
+                $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '"></div>');
 
-            // adding container width height to slider
-            $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
+                // adding container width height to slider
+                $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
 
-            // start trigger
-            play();
+                // start trigger
+                //$.fn.bose('play');
+                $(this).bose('play');
 
-            // callback
-        	if ( settings.onComplete ) settings.onComplete.call( this );
+                // callback
+                if ( settings.onComplete ) settings.onComplete.call( this );
 
-        });
+            });
 
-        // allow chain
-        return this;
+            // allow chain
+            return this;
+
+        },
+        play : function() {
+            showImage(currentImageIndex++);
+        
+            sliding = setInterval(function(){
+                sliderStarted = true;
+
+                if(currentImageIndex > (settings.images.length - 1)) currentImageIndex = 0;
+                showImage(currentImageIndex++);
+
+            }, settings.timeout * 1000);
+        }
+    };
+
+    $.fn.bose = function( method ) {
+
+        if ( methods[method] ) {
+          return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        } else if ( typeof method === 'object' || ! method ) {
+          return methods.init.apply( this, arguments );
+        } else {
+          $.error( 'Method ' +  method + ' does not exist on jQuery.boseSlider' );
+        } 
+        
     }
 
     /**
@@ -77,11 +104,11 @@
     }
 
     /**
-     * [preload_images - allow preload images]
+     * [preloadImages - allow preload images]
      * @param  {[array]} imageArray [one dimentional array]
      * @return {[null]}            [adding image to browser cache]
      */
-    function preload_images(imageArray) {
+    $.fn.bose.preloadImages = function(imageArray) {
         var preloaderArea = prefix + '-hiddenImages';
         $('body').append('<div id="'+preloaderArea+'" style="display:none"></div>');
         
@@ -96,7 +123,7 @@
      * @return {[string]}     [return image style]
      */
     function fitImg(img){
-        var scaledWidth = (img.width * objWH.height) / img.height;
+        var scaledWidth  = (img.width * objWH.height) / img.height;
         var scaledHeight = (img.height * objWH.width) / img.width;
 
         if( scaledWidth < objWH.width &&  scaledHeight > objWH.height ){
@@ -119,8 +146,8 @@
      * @return {[null]}                   [slide]
      */
     function showImage(currentImageIndex){
-        var img = new Image();
-        img.src = settings.images[currentImageIndex];
+        var img    = new Image();
+        img.src    = settings.images[currentImageIndex];
         img.onload = function() {
             if(sliderStarted === true){
 
@@ -168,24 +195,6 @@
                 }
             }
         };
-    }
-
-    /**
-     * [play - Start slider]
-     * @return {[null]} [passing current index into setInterval]
-     */
-    function play(){
-        showImage(currentImageIndex++);
-        
-        sliding = setInterval(function(){
-            sliderStarted = true;
-
-            if(currentImageIndex > (settings.images.length - 1)) currentImageIndex = 0;
-            showImage(currentImageIndex++);
-
-        }, settings.timeout * 1000);
-    }
-
-    
+    }    
 
 }(jQuery));

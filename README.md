@@ -1,5 +1,5 @@
-bose
-====
+bose Slider
+===========
 
 A div background slider using jQuery
 
