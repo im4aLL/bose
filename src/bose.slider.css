@@ -1,4 +1,9 @@
+/**
+ * bose.slider.css
+ * a lightweight jquery plugin for div background slider
+ */
+
 .bose-wrapper { position: relative; overflow: hidden; }
-		.bose-wrapper img { position: absolute; }
-		.bose-slider { z-index: 1 }
-		.bose-holder { position: absolute; top: 0; left: 0; z-index: -3; background: #ddd }
+	.bose-wrapper img { position: absolute; }
+.bose-slider { z-index: 1 }
+.bose-holder { position: absolute; top: 0; left: 0; z-index: -3; background: #ddd }

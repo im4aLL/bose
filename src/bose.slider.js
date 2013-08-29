@@ -1,6 +1,14 @@
+/**
+ * [bose.slider.js]
+ * @param  {[plugin]} $ [div background slider]
+ * @author {[Hadi]}   [http://habibhadi.com]
+ */
 (function($) {
 
-    // default settings
+    /**
+     * [default and global variables]
+     * @type {String and Object}
+     */
     var prefix        = 'bose',
     wrapClass         = prefix + '-wrapper',
     sliderClass       = prefix + '-slider',
@@ -15,7 +23,10 @@
 
     $.fn.bose = function( options ) {
 
-        // plugin params
+        /**
+         * [plugin hooks]
+         * @type {String and Object}
+         */
     	settings = $.extend({
             images       : null,
             onComplete   : function() {},
@@ -41,9 +52,10 @@
             // adding image holder
             $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '"></div>');
 
-            $('.'+settings.wrapClass).children('.'+settings.holderClass)
-            .css({ width : objWH.width +'px', height : objWH.height +'px' });
+            // adding container width height to slider
+            $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
 
+            // start trigger
             play();
 
             // callback
@@ -55,10 +67,20 @@
         return this;
     }
 
+    /**
+     * [getWidthHeight - grab width and height of an element]
+     * @param  {[object]} elem [div id or class]
+     * @return {[object]}      [width and height information]
+     */
     function getWidthHeight( elem ){
         return container = { width : $(elem).width(), height : $(elem).height() };
     }
 
+    /**
+     * [preload_images - allow preload images]
+     * @param  {[array]} imageArray [one dimentional array]
+     * @return {[null]}            [adding image to browser cache]
+     */
     function preload_images(imageArray) {
         var preloaderArea = prefix + '-hiddenImages';
         $('body').append('<div id="'+preloaderArea+'" style="display:none"></div>');
@@ -68,6 +90,11 @@
         }
     }
 
+    /**
+     * [fitImg - fit image to container]
+     * @param  {[object]} img [cached image var]
+     * @return {[string]}     [return image style]
+     */
     function fitImg(img){
         var scaledWidth = (img.width * objWH.height) / img.height;
         var scaledHeight = (img.height * objWH.width) / img.width;
@@ -86,6 +113,11 @@
 
     }
 
+    /**
+     * [showImage - showing image by current image array index]
+     * @param  {[number]} currentImageIndex [image array index]
+     * @return {[null]}                   [slide]
+     */
     function showImage(currentImageIndex){
         var img = new Image();
         img.src = settings.images[currentImageIndex];
@@ -138,7 +170,10 @@
         };
     }
 
-
+    /**
+     * [play - Start slider]
+     * @return {[null]} [passing current index into setInterval]
+     */
     function play(){
         showImage(currentImageIndex++);
         
