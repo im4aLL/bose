@@ -158,8 +158,6 @@
      */
     function showImage(currentImageIndex){
 
-        console.log('Destroy '+ prevImgIndex +' - Show ' + currentImageIndex);
-
         var img    = new Image();
         img.src    = settings.images[currentImageIndex];
         img.onload = function() {
