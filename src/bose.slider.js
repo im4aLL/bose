@@ -4,7 +4,7 @@
  * @author {[Hadi]}   [http://habibhadi.com]
  * @github https://github.com/im4aLL/bose
  */
-(function($) {
+;(function($) {
 
     /**
      * [default and global variables]
@@ -23,7 +23,8 @@
     sliding             = null,
     sliderStarted       = false,
     previousTriggered   = false,
-    pauseTriggered      = false;
+    pauseTriggered      = false,
+    thumbWH             = {width: 100, height: 50};
 
     var methods = {
         init : function( options ) { 
@@ -34,6 +35,7 @@
              */
             settings = $.extend({
                 images       : null,
+                imageTitles  : [],
                 onComplete   : function() {},
                 onSlideStart : function() {},
                 onSlideEnd   : function() {},
@@ -44,7 +46,8 @@
                 transition   : 'fade',
                 timeout      : 5,
                 duration     : 2,
-                pagination   : { show : false, container : '.' + prefix + '-numeric-control' }
+                pagination   : { show : false, container : '.' + prefix + '-numeric-control', text : true },
+                thumbs       : { show : true, container : '.' + prefix + '-image-thumbs', dimension : { width : thumbWH.width, height: thumbWH.height }, text : false }
             }, options);
 
             this.each(function(index, el) {
@@ -69,6 +72,9 @@
                 // pagination
                 if( settings.pagination.show === true ) showPagination();
 
+                // thumbs
+                if( settings.thumbs.show === true ) showThumbPagination();
+
                 // callback
                 if ( settings.onComplete ) settings.onComplete.call( this );
 
@@ -82,7 +88,6 @@
             if(pauseTriggered===false) showImage(currentImageIndex++);
         
             sliding = setInterval(function(){
-                sliderStarted = true;
                 nextTrigger();
 
             }, settings.timeout * 1000);
@@ -170,50 +175,40 @@
         var img    = new Image();
         img.src    = settings.images[currentImageIndex];
         img.onload = function() {
-            if(sliderStarted === true){
 
-                switch(settings.transition){
-                    case 'fade':
 
-                        //var prevImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+prevImgIndex);
-                        var prevImg = $('.'+settings.holderClass).find('img');
+            switch(settings.transition){
+                case 'fade':
+
+                    //var prevImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+prevImgIndex);
+                    var prevImg = $('.'+settings.holderClass).find('img');
+                    if(prevImg.length>0){
                         prevImg.stop().animate({
                             opacity: 0},
                             settings.duration * 1000, function() {
                                 prevImg.remove();
                                 if ( settings.onSlideStart ) settings.onSlideStart.call( this, prevImgIndex );
                         });
+                    }
 
-                        $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" src="'+settings.images[currentImageIndex]+'" style="'+fitImg(img)+'">');
+                    $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" '+
+                                                        'src="'+settings.images[currentImageIndex]+'" '+
+                                                        'alt="'+getTitle(currentImageIndex)+'"'+
+                                                        'style="'+fitImg(img)+'">');
 
-                        var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
-                        curImg.css({ opacity:0 });
-                        curImg.stop().animate({
-                            opacity: 1},
-                            settings.duration * 1000, function() {
-                                if ( settings.onSlideEnd ) settings.onSlideEnd.call( this, currentImageIndex );
-                                addActiveClass(currentImageIndex);
-                        });
-
-                    break;
-                }
-
-            }
-            else {
-                switch(settings.transition){
-                    case 'fade':
-                    $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" src="'+settings.images[currentImageIndex]+'" style="'+fitImg(img)+'">');
                     var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
                     curImg.css({ opacity:0 });
-                    curImg.animate({
+                    curImg.stop().animate({
                         opacity: 1},
                         settings.duration * 1000, function() {
                             if ( settings.onSlideEnd ) settings.onSlideEnd.call( this, currentImageIndex );
                             addActiveClass(currentImageIndex);
                     });
-                    break;
-                }
+
+                break;
             }
+
+
         };
     }
 
@@ -281,7 +276,7 @@
 
             for(var bosePage=1; bosePage <= settings.images.length; bosePage++){
                 bosePageListContainer.append('<li class="'+prefix+'-pg-'+bosePage+''+((bosePage==1)?" first":'')+''+((bosePage==settings.images.length)?" last":'')+'">'+
-                                                '<a href="javascript:void(0)">'+bosePage+'</a>'+
+                                                '<a href="javascript:void(0)">'+((settings.pagination.text===true)?bosePage:'')+'</a>'+
                                              '</li>');
             }
 
@@ -302,6 +297,55 @@
         if( settings.pagination.show === true && $(settings.pagination.container).length > 0  ){
             $(settings.pagination.container).find('li').removeClass('active');
             $(settings.pagination.container).children('ul').children('li:nth-child('+index+')').addClass('active');
+        }
+
+        if( settings.thumbs.show === true && $(settings.thumbs.container).length > 0  ){
+            $(settings.thumbs.container).find('li').removeClass('active');
+            $(settings.thumbs.container).children('ul').children('li:nth-child('+index+')').addClass('active');
+        }
+    }
+
+    /**
+     * [getTitle grabs image title from imageTitles array]
+     * @param  {[number]} currentImageIndex [current image number]
+     * @return {[string]}                   [image title]
+     */
+    function getTitle(currentImageIndex){
+        if( settings.imageTitles[currentImageIndex] && settings.imageTitles[currentImageIndex][0].length ) 
+            return settings.imageTitles[currentImageIndex][0];
+    }
+
+    function getDescription(currentImageIndex){
+        if( settings.imageTitles[currentImageIndex] && settings.imageTitles[currentImageIndex][1].length ) 
+            return settings.imageTitles[currentImageIndex][1];
+    }
+
+    /**
+     * [showThumbPagination show image thumbnail list]
+     * @return {[html]} [generate thumbnails list in thumb container]
+     */
+    function showThumbPagination(){
+        if( $(settings.thumbs.container).length > 0 ){
+            
+            $(settings.thumbs.container).append('<ul></ul>');
+            var boseThumbPageListContainer = $(settings.thumbs.container).children('ul');
+
+            for(var bosePage=1; bosePage <= settings.images.length; bosePage++){
+                boseThumbPageListContainer.append('<li class="'+prefix+'-thumb-'+bosePage+''+((bosePage==1)?" first":'')+''+((bosePage==settings.images.length)?" last":'')+'">'+
+                                                '<a href="javascript:void(0)">'+
+                                                    '<img src="'+settings.images[bosePage-1]+'" '+
+                                                    'width="'+((settings.thumbs.dimension && settings.thumbs.dimension.width!=thumbWH.width)?settings.thumbs.dimension.width:thumbWH.width)+'" '+
+                                                    'height="'+((settings.thumbs.dimension && settings.thumbs.dimension.height!=thumbWH.height)?settings.thumbs.dimension.height:thumbWH.height)+'">'+
+                                                    '<span class="info"><span class="title">'+getTitle(bosePage-1)+'</span> <span class="description">'+getDescription(bosePage-1)+'</span></span>'+
+                                                '</a>'+
+                                             '</li>');
+            }
+
+            $(settings.thumbs.container).find('li').bind("click", function(){
+                pauseTrigger();
+                currentImageIndex = $(this).index();
+                showImage(currentImageIndex++);
+            });
         }
     }
 

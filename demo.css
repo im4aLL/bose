@@ -1,5 +1,16 @@
 * { margin: 0; padding: 0 }
+a { text-decoration: none; color: #46BDEF; font-weight: bold }
+
 body { font-family: "Arial", Helvetica; font-size: 12px; color: #162E2E }
 .bose { height: 500px; }
 .bose p { padding: 20px; color: #fff; font-weight: bold; background: rgba(0,0,0, .5); margin: 20px }
 .container { width: 960px; margin: 0 auto }
+
+ul { list-style: none; }
+ul li { display: inline; margin-right: 10px; }
+.bose-thumbs ul li a { float: left; border: 1px solid #ddd; padding: 3px; margin-right: 5px }
+.bose-thumbs ul li.active a { background-color: #ececec }
+.bose-thumbs ul li a img { float: left; margin-right: 10px }
+.bose-thumbs ul li a .info { display: inline-block; padding-right: 10px }
+.bose-thumbs ul li a .info .title { display: block }
+.bose-thumbs ul li a .info .description { font-weight: normal }

@@ -21,7 +21,13 @@
 	<button class="previous">previous</button>
 	<button class="next">next</button>
 
+	<br><br>
+
 	<div class="bose-pagination"></div>
+
+	<br><br>
+
+	<div class="bose-thumbs"></div>
 
 </div>
 	
@@ -32,16 +38,22 @@
 
 			$(".bose").bose({
 				images : [ "http://lorempixel.com/960/500/sports", "http://lorempixel.com/960/500/fashion", "http://lorempixel.com/960/500/nature"],
+				imageTitles: [
+					['Title 1', 'Description one here'],
+					['Title 2', 'Description two here'],
+					['Title 3', 'Description three here']
+				],
 				onComplete : function(){ 
-					//console.log("Trigger onComplete!"); 
+					console.log("Trigger onComplete!"); 
 				},
 				onSlideStart : function(index){
-					//console.log(index + ' destroying'); 
+					console.log(index + ' destroying'); 
 				},
 				onSlideEnd : function(index){ 
-					//console.log(index + ' showed'); 
+					console.log(index + ' showed'); 
 				},
-				pagination : { show : true, container : '.bose-pagination' }
+				pagination : { show : true, container : '.bose-pagination', text : true },
+				thumbs : { show : true, container : '.bose-thumbs', dimension : { width : 150, height: 70 }, text : true }
 			});
 
 			$('.play').click(function(){
