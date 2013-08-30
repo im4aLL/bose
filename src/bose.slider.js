@@ -2,6 +2,7 @@
  * [bose.slider.js]
  * @param  {[plugin]} $ [div background slider]
  * @author {[Hadi]}   [http://habibhadi.com]
+ * @github https://github.com/im4aLL/bose
  */
 (function($) {
 
@@ -21,7 +22,8 @@
     wHeight             = $(window).height(),
     sliding             = null,
     sliderStarted       = false,
-    previousTriggered   = false;
+    previousTriggered   = false,
+    pauseTriggered      = false;
 
     var methods = {
         init : function( options ) { 
@@ -41,7 +43,8 @@
                 startIndex   : 0,
                 transition   : 'fade',
                 timeout      : 5,
-                duration     : 2
+                duration     : 2,
+                pagination   : { show : false, container : '.' + prefix + '-numeric-control' }
             }, options);
 
             this.each(function(index, el) {
@@ -59,8 +62,12 @@
                 $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
 
                 // start trigger
+                currentImageIndex = settings.startIndex;
                 //$.fn.bose('play');
                 $(this).bose('play');
+
+                // pagination
+                if( settings.pagination.show === true ) showPagination();
 
                 // callback
                 if ( settings.onComplete ) settings.onComplete.call( this );
@@ -72,23 +79,25 @@
 
         },
         play : function() {
-            showImage(currentImageIndex++);
+            if(pauseTriggered===false) showImage(currentImageIndex++);
         
             sliding = setInterval(function(){
                 sliderStarted = true;
                 nextTrigger();
 
             }, settings.timeout * 1000);
+
+            pauseTriggered = false;
         },
         pause : function(){
-            clearInterval(sliding);
+            pauseTrigger();
         },
         next : function(){
-            clearInterval(sliding);
+            pauseTrigger();
             nextTrigger();
         },
         previous : function(){
-            clearInterval(sliding);
+            pauseTrigger();
             prevTrigger();
         }
     };
@@ -165,16 +174,17 @@
 
                 switch(settings.transition){
                     case 'fade':
-                        
-                        $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" src="'+settings.images[currentImageIndex]+'" style="'+fitImg(img)+'">');
 
-                        if ( settings.onSlideStart ) settings.onSlideStart.call( this, prevImgIndex );
-                        var prevImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+prevImgIndex);
+                        //var prevImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+prevImgIndex);
+                        var prevImg = $('.'+settings.holderClass).find('img');
                         prevImg.stop().animate({
                             opacity: 0},
                             settings.duration * 1000, function() {
                                 prevImg.remove();
+                                if ( settings.onSlideStart ) settings.onSlideStart.call( this, prevImgIndex );
                         });
+
+                        $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" src="'+settings.images[currentImageIndex]+'" style="'+fitImg(img)+'">');
 
                         var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
                         curImg.css({ opacity:0 });
@@ -182,6 +192,7 @@
                             opacity: 1},
                             settings.duration * 1000, function() {
                                 if ( settings.onSlideEnd ) settings.onSlideEnd.call( this, currentImageIndex );
+                                addActiveClass(currentImageIndex);
                         });
 
                     break;
@@ -198,6 +209,7 @@
                         opacity: 1},
                         settings.duration * 1000, function() {
                             if ( settings.onSlideEnd ) settings.onSlideEnd.call( this, currentImageIndex );
+                            addActiveClass(currentImageIndex);
                     });
                     break;
                 }
@@ -246,6 +258,51 @@
 
         showImage(currentImageIndex--);
         previousTriggered = true;
+    }
+
+    /**
+     * [pauseTrigger Pause slider]
+     * @return {[clearing timeout]} [trigger the pause]
+     */
+    function pauseTrigger(){
+        clearInterval(sliding);
+        pauseTriggered = true;
+    }
+
+    /**
+     * [showPagination Numeric Pagination]
+     * @return {[HTML]} [Generating numbers]
+     */
+    function showPagination(){
+        if( $(settings.pagination.container).length > 0 ){
+            
+            $(settings.pagination.container).append('<ul></ul>');
+            var bosePageListContainer = $(settings.pagination.container).children('ul');
+
+            for(var bosePage=1; bosePage <= settings.images.length; bosePage++){
+                bosePageListContainer.append('<li class="'+prefix+'-pg-'+bosePage+''+((bosePage==1)?" first":'')+''+((bosePage==settings.images.length)?" last":'')+'">'+
+                                                '<a href="javascript:void(0)">'+bosePage+'</a>'+
+                                             '</li>');
+            }
+
+            $(settings.pagination.container).find('li').bind("click", function(){
+                pauseTrigger();
+                currentImageIndex = $(this).index();
+                showImage(currentImageIndex++);
+            });
+        }
+    }
+
+    /**
+     * [addActiveClass - to add active class to page]
+     * @param {[html]} index [index number of li clicked]
+     */
+    function addActiveClass(index){
+        index++;
+        if( settings.pagination.show === true && $(settings.pagination.container).length > 0  ){
+            $(settings.pagination.container).find('li').removeClass('active');
+            $(settings.pagination.container).children('ul').children('li:nth-child('+index+')').addClass('active');
+        }
     }
 
 }(jQuery));
