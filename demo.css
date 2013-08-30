@@ -16,3 +16,5 @@ ul li { display: inline; margin-right: 10px; }
 .bose-thumbs ul li a .info .description { font-weight: normal }
 
 pre { background-color: #222222; color: #ccc; padding: 15px; overflow-x: auto; }
+
+ol { margin: 20px 0px 0px 18px; }
