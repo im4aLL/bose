@@ -36,9 +36,6 @@
             settings = $.extend({
                 images       : null,
                 imageTitles  : [],
-                onComplete   : function() {},
-                onSlideStart : function() {},
-                onSlideEnd   : function() {},
                 wrapClass    : wrapClass,
                 sliderClass  : sliderClass,
                 holderClass  : holderClass,
@@ -47,7 +44,11 @@
                 timeout      : 5,
                 duration     : 2,
                 pagination   : { show : false, container : '.' + prefix + '-numeric-control', text : true },
-                thumbs       : { show : true, container : '.' + prefix + '-image-thumbs', dimension : { width : thumbWH.width, height: thumbWH.height }, text : false }
+                thumbs       : { show : true, container : '.' + prefix + '-image-thumbs', dimension : { width : thumbWH.width, height: thumbWH.height }, text : false },
+                onComplete   : function() {},
+                onSlideStart : function() {},
+                onSlideEnd   : function() {},
+                onPause      : function() {}
             }, options);
 
             this.each(function(index, el) {
@@ -56,10 +57,10 @@
                 objWH = getWidthHeight(this);
 
                 // adding class and wrapper
-                $(this).addClass(settings.sliderClass).wrap('<div class="'+settings.wrapClass+'" />');
+                $(this).addClass(settings.sliderClass).css({ 'z-index' : 1 }).wrap('<div class="'+settings.wrapClass+'" style="position: relative; overflow: hidden;" />');
                 
                 // adding image holder
-                $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '"></div>');
+                $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '" style="position: absolute; top: 0; left: 0; z-index: -3;"></div>');
 
                 // adding container width height to slider
                 $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
@@ -96,6 +97,7 @@
         },
         pause : function(){
             pauseTrigger();
+            if ( settings.onPause ) settings.onPause.call( this );
         },
         next : function(){
             pauseTrigger();
@@ -194,7 +196,7 @@
                     $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" '+
                                                         'src="'+settings.images[currentImageIndex]+'" '+
                                                         'alt="'+getTitle(currentImageIndex)+'"'+
-                                                        'style="'+fitImg(img)+'">');
+                                                        'style="'+fitImg(img)+'; position: absolute;">');
 
                     var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
                     curImg.css({ opacity:0 });
