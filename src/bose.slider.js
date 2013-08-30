@@ -9,17 +9,19 @@
      * [default and global variables]
      * @type {String and Object}
      */
-    var prefix        = 'bose',
-    wrapClass         = prefix + '-wrapper',
-    sliderClass       = prefix + '-slider',
-    holderClass       = prefix + '-holder',
-    settings          = {},
-    currentImageIndex = 0,
-    objWH             = {},
-    wWidth            = $(window).width(),
-    wHeight           = $(window).height(),
-    sliding           = null,
-    sliderStarted     = false;
+    var prefix          = 'bose',
+    wrapClass           = prefix + '-wrapper',
+    sliderClass         = prefix + '-slider',
+    holderClass         = prefix + '-holder',
+    settings            = {},
+    currentImageIndex   = 0,
+    prevImgIndex        = 0,
+    objWH               = {},
+    wWidth              = $(window).width(),
+    wHeight             = $(window).height(),
+    sliding             = null,
+    sliderStarted       = false,
+    previousTriggered   = false;
 
     var methods = {
         init : function( options ) { 
@@ -74,11 +76,20 @@
         
             sliding = setInterval(function(){
                 sliderStarted = true;
-
-                if(currentImageIndex > (settings.images.length - 1)) currentImageIndex = 0;
-                showImage(currentImageIndex++);
+                nextTrigger();
 
             }, settings.timeout * 1000);
+        },
+        pause : function(){
+            clearInterval(sliding);
+        },
+        next : function(){
+            clearInterval(sliding);
+            nextTrigger();
+        },
+        previous : function(){
+            clearInterval(sliding);
+            prevTrigger();
         }
     };
 
@@ -146,6 +157,9 @@
      * @return {[null]}                   [slide]
      */
     function showImage(currentImageIndex){
+
+        console.log('Destroy '+ prevImgIndex +' - Show ' + currentImageIndex);
+
         var img    = new Image();
         img.src    = settings.images[currentImageIndex];
         img.onload = function() {
@@ -156,13 +170,9 @@
                         
                         $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" src="'+settings.images[currentImageIndex]+'" style="'+fitImg(img)+'">');
 
-                        var prevImgIndex = currentImageIndex-1;
-                        if(prevImgIndex<0) prevImgIndex = settings.images.length - 1;
-
                         if ( settings.onSlideStart ) settings.onSlideStart.call( this, prevImgIndex );
-
                         var prevImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+prevImgIndex);
-                        prevImg.animate({
+                        prevImg.stop().animate({
                             opacity: 0},
                             settings.duration * 1000, function() {
                                 prevImg.remove();
@@ -170,7 +180,7 @@
 
                         var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
                         curImg.css({ opacity:0 });
-                        curImg.animate({
+                        curImg.stop().animate({
                             opacity: 1},
                             settings.duration * 1000, function() {
                                 if ( settings.onSlideEnd ) settings.onSlideEnd.call( this, currentImageIndex );
@@ -195,6 +205,49 @@
                 }
             }
         };
-    }    
+    }
+
+    /**
+     * [nextTrigger Slider next]
+     * @return {[null]} [add previous and current image index and transfer to showImage for next]
+     */
+    function nextTrigger(){
+        if(previousTriggered){
+            prevImgIndex = currentImageIndex + 1;
+            currentImageIndex = currentImageIndex + 2;
+            previousTriggered = false;
+        }
+        else {
+            prevImgIndex = currentImageIndex-1;
+            if(prevImgIndex<0) prevImgIndex = settings.images.length - 1;
+        }
+
+        if(currentImageIndex > (settings.images.length - 1)) currentImageIndex = 0;
+
+        showImage(currentImageIndex++);
+    }
+    
+    /**
+     * [nextTrigger Slider prev]
+     * @return {[null]} [add previous and current image index and transfer to showImage for prev]
+     */
+    function prevTrigger(){
+        if(!previousTriggered){
+            prevImgIndex = currentImageIndex - 1;
+            currentImageIndex = currentImageIndex - 2;
+            if(currentImageIndex < 0) currentImageIndex = settings.images.length - 1;
+        }
+        else {
+            prevImgIndex = currentImageIndex+1;
+            if(prevImgIndex>(settings.images.length - 1)) prevImgIndex = 0;
+            else if(prevImgIndex<0) prevImgIndex = settings.images.length - 1;
+
+            if(currentImageIndex > (settings.images.length - 1)) currentImageIndex = 0;
+            else if(currentImageIndex < 0) currentImageIndex = settings.images.length - 1;
+        }
+
+        showImage(currentImageIndex--);
+        previousTriggered = true;
+    }
 
 }(jQuery));
