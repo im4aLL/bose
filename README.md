@@ -6,6 +6,17 @@ bose Slider
 
 Slider doesn't require any css. Controls in below is completely external and slider can suite into any container and image will auto fit! Good luck.
 
+
+1. div or element background slider
+2. can fit to any container whatever the image size is
+3. external controls
+4. play, pause, next, prev controls
+5. numeric pagination
+6. thumbnail pagination with text and description
+7. able to preload images into broswer cache
+8. callbacks
+9. need more? email to me@habibhadi.com
+
 Usage
 -----
 ```javascript
