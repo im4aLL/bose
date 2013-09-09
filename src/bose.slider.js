@@ -313,13 +313,17 @@
      * @return {[string]}                   [image title]
      */
     function getTitle(currentImageIndex){
-        if( settings.imageTitles[currentImageIndex] && settings.imageTitles[currentImageIndex][0].length ) 
+        if( settings.imageTitles.length > 0 ) {
             return settings.imageTitles[currentImageIndex][0];
+        }
+        else return '';
     }
 
     function getDescription(currentImageIndex){
-        if( settings.imageTitles[currentImageIndex] && settings.imageTitles[currentImageIndex][1].length ) 
+        if( settings.imageTitles.length > 0 ) { 
             return settings.imageTitles[currentImageIndex][1];
+        }
+        else return '';
     }
 
     /**
