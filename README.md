@@ -25,7 +25,7 @@ Usage
 
 Demo
 ----
-http://habibhadi.com/demo/bose/
+http://habibhadi.com/demo/jquery-div-background-slider/
 
 ```javascript
 $("selector").bose({
