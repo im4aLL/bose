@@ -23,6 +23,10 @@ Usage
 <script src="bose.slider.min.js">
 ```
 
+Demo
+----
+http://habibhadi.com/demo/bose/
+
 ```javascript
 $("selector").bose({
 	images : [ "imagePath_1", "imagePath_2", "imagePath_3"]
