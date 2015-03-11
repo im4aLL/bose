@@ -49,7 +49,8 @@
                 onSlideStart : function() {},
                 onSlideEnd   : function() {},
                 onPause      : function() {},
-                autofit      : true
+                autofit      : true,
+                full         : false
             }, options);
 
             this.each(function(index, el) {
@@ -64,7 +65,12 @@
                 $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '" style="position: absolute; top: 0; left: 0; z-index: -3;"></div>');
 
                 // adding container width height to slider
-                $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
+                if(settings.full === false) {
+                    $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
+                }
+                else {
+                    $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : '100%', height : '100vh' });
+                }
 
                 // start trigger
                 currentImageIndex = settings.startIndex;
