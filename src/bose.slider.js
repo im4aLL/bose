@@ -27,7 +27,7 @@
     thumbWH             = {width: 100, height: 50};
 
     var methods = {
-        init : function( options ) { 
+        init : function( options ) {
 
             /**
              * [plugin hooks]
@@ -48,7 +48,8 @@
                 onComplete   : function() {},
                 onSlideStart : function() {},
                 onSlideEnd   : function() {},
-                onPause      : function() {}
+                onPause      : function() {},
+                autofit      : true
             }, options);
 
             this.each(function(index, el) {
@@ -58,7 +59,7 @@
 
                 // adding class and wrapper
                 $(this).addClass(settings.sliderClass).css({ 'z-index' : 1 }).wrap('<div class="'+settings.wrapClass+'" style="position: relative; overflow: hidden;" />');
-                
+
                 // adding image holder
                 $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '" style="position: absolute; top: 0; left: 0; z-index: -3;"></div>');
 
@@ -87,7 +88,7 @@
         },
         play : function() {
             if(pauseTriggered===false) showImage(currentImageIndex++);
-        
+
             sliding = setInterval(function(){
                 nextTrigger();
 
@@ -117,8 +118,8 @@
           return methods.init.apply( this, arguments );
         } else {
           $.error( 'Method ' +  method + ' does not exist on jQuery.boseSlider' );
-        } 
-        
+        }
+
     }
 
     /**
@@ -138,7 +139,7 @@
     $.fn.bose.preloadImages = function(imageArray) {
         var preloaderArea = prefix + '-hiddenImages';
         $('body').append('<div id="'+preloaderArea+'" style="display:none"></div>');
-        
+
         for(var i = 0; i < imageArray.length; i++) {
             $('<img />').attr({ src: imageArray[i], alt: '' }).appendTo('#'+preloaderAreaMain).hide();
         }
@@ -178,12 +179,10 @@
         img.src    = settings.images[currentImageIndex];
         img.onload = function() {
 
-
             switch(settings.transition){
                 case 'fade':
 
-                    //var prevImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+prevImgIndex);
-                    var prevImg = $('.'+settings.holderClass).find('img');
+                    var prevImg = $('.'+settings.holderClass).children();
                     if(prevImg.length>0){
                         prevImg.stop().animate({
                             opacity: 0},
@@ -193,10 +192,20 @@
                         });
                     }
 
-                    $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" '+
+                    var autofitHtml = '';
+                    if(settings.autofit === false) {
+                        $('.'+settings.holderClass).append('<div class="'+prefix+'-image-'+currentImageIndex+'" '+
+                                                        'style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; '+
+                                                        'background-image: url('+settings.images[currentImageIndex]+'); '+
+                                                        'background-size: cover;'+
+                                                        '"></div>');
+                    }
+                    else {
+                        $('.'+settings.holderClass).append('<img class="'+prefix+'-image-'+currentImageIndex+'" '+
                                                         'src="'+settings.images[currentImageIndex]+'" '+
                                                         'alt="'+getTitle(currentImageIndex)+'"'+
                                                         'style="'+fitImg(img)+'; position: absolute;">');
+                    }
 
                     var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
                     curImg.css({ opacity:0 });
@@ -233,7 +242,7 @@
 
         showImage(currentImageIndex++);
     }
-    
+
     /**
      * [nextTrigger Slider prev]
      * @return {[null]} [add previous and current image index and transfer to showImage for prev]
@@ -272,7 +281,7 @@
      */
     function showPagination(){
         if( $(settings.pagination.container).length > 0 ){
-            
+
             $(settings.pagination.container).append('<ul></ul>');
             var bosePageListContainer = $(settings.pagination.container).children('ul');
 
@@ -320,7 +329,7 @@
     }
 
     function getDescription(currentImageIndex){
-        if( settings.imageTitles.length > 0 ) { 
+        if( settings.imageTitles.length > 0 ) {
             return settings.imageTitles[currentImageIndex][1];
         }
         else return '';
@@ -332,7 +341,7 @@
      */
     function showThumbPagination(){
         if( $(settings.thumbs.container).length > 0 ){
-            
+
             $(settings.thumbs.container).append('<ul></ul>');
             var boseThumbPageListContainer = $(settings.thumbs.container).children('ul');
 

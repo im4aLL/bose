@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Bose - jQuery DIV background Slider</title>
-	
+
 	<link rel="stylesheet" href="demo.css">
 
 </head>
@@ -106,15 +106,16 @@ thumbs       : { show : boolean(true/false), container : selector, dimension : {
 onComplete   : function() {},
 onSlideStart : function() {},
 onSlideEnd   : function() {},
-onPause      : function() {}
+onPause      : function() {},
+autofit      : true // if false then background image will be cover
 	</pre>
 
 	<br><br>
 	<small>made by me@habibhadi.com</small>
 	<br><br>
-	
+
 </div>
-	
+
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script src="src/bose.slider.js"></script>
 	<script>
@@ -127,17 +128,17 @@ onPause      : function() {}
 					['Title 2', 'Description two here'],
 					['Title 3', 'Description three here']
 				],
-				onComplete : function(){ 
-					console.log("Trigger onComplete!"); 
+				onComplete : function(){
+					console.log("Trigger onComplete!");
 				},
 				onSlideStart : function(index){
-					console.log(index + ' destroying'); 
+					console.log(index + ' destroying');
 				},
-				onSlideEnd : function(index){ 
-					console.log(index + ' showed'); 
+				onSlideEnd : function(index){
+					console.log(index + ' showed');
 				},
-				onPause : function(index){ 
-					console.log('Paused'); 
+				onPause : function(index){
+					console.log('Paused');
 				},
 				pagination : { show : true, container : '.bose-pagination', text : true },
 				thumbs : { show : true, container : '.bose-thumbs', dimension : { width : 150, height: 70 }, text : true }

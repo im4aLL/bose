@@ -31,7 +31,7 @@ http://habibhadi.com/demo/jquery-div-background-slider/
 $("selector").bose({
 	images : [ "imagePath_1", "imagePath_2", "imagePath_3"]
 });
-```	
+```
 
 
 
@@ -53,7 +53,7 @@ $('.previous').click(function(){
 $('.next').click(function(){
 	$(".bose").bose('next');
 });
-```	
+```
 
 ###Options:
 
@@ -76,6 +76,7 @@ thumbs       : { show : boolean(true/false), container : selector, dimension : {
 onComplete   : function() {},
 onSlideStart : function() {},
 onSlideEnd   : function() {},
-onPause      : function() {}
+onPause      : function() {},
+autofit      : true // if false then background image will be cover
 ```
-	
+
