@@ -3,6 +3,7 @@
  * @param  {[plugin]} $ [div background slider]
  * @author {[Hadi]}   [http://habibhadi.com]
  * @github https://github.com/im4aLL/bose
+ * @version  1.5
  */
 ;(function($) {
 
@@ -50,7 +51,8 @@
                 onSlideEnd   : function() {},
                 onPause      : function() {},
                 autofit      : true,
-                full         : false
+                full         : false,
+                responsive   : true
             }, options);
 
             this.each(function(index, el) {
@@ -65,11 +67,17 @@
                 $('.'+settings.wrapClass).prepend('<div class="' +settings.holderClass+ '" style="position: absolute; top: 0; left: 0; z-index: -3;"></div>');
 
                 // adding container width height to slider
+                var holderElem = $('.'+settings.wrapClass).children('.'+settings.holderClass);
                 if(settings.full === false) {
-                    $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : objWH.width +'px', height : objWH.height +'px' });
+                    if(settings.responsive === false) {
+                        holderElem.css({ width : objWH.width +'px', height : objWH.height +'px' });
+                    }
+                    else if(settings.responsive === true) {
+                        holderElem.css({ width : '100%', height : objWH.height +'px' });
+                    }
                 }
                 else {
-                    $('.'+settings.wrapClass).children('.'+settings.holderClass).css({ width : '100%', height : '100vh' });
+                    holderElem.css({ width : '100%', height : '100vh' });
                 }
 
                 // start trigger
@@ -202,7 +210,7 @@
                     if(settings.autofit === false) {
                         $('.'+settings.holderClass).append('<div class="'+prefix+'-image-'+currentImageIndex+'" '+
                                                         'style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; '+
-                                                        'background-image: url('+settings.images[currentImageIndex]+'); '+
+                                                        'background: url('+settings.images[currentImageIndex]+') 50% 50%; '+
                                                         'background-size: cover;'+
                                                         '"></div>');
                     }

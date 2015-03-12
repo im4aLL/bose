@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Bose - jQuery DIV background Slider</title>
 
 	<link rel="stylesheet" href="demo.css">
@@ -141,7 +142,9 @@ autofit      : true // if false then background image will be cover
 					console.log('Paused');
 				},
 				pagination : { show : true, container : '.bose-pagination', text : true },
-				thumbs : { show : true, container : '.bose-thumbs', dimension : { width : 150, height: 70 }, text : true }
+				thumbs : { show : true, container : '.bose-thumbs', dimension : { width : 150, height: 70 }, text : true },
+				responsive : true,
+				autofit : false
 			});
 
 			$('.play').click(function(){
