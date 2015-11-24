@@ -37,6 +37,7 @@
             settings = $.extend({
                 images       : null,
                 imageTitles  : [],
+                imageAttributes: [],
                 wrapClass    : wrapClass,
                 sliderClass  : sliderClass,
                 holderClass  : holderClass,
@@ -222,6 +223,13 @@
                     }
 
                     var curImg = $('.'+settings.holderClass).children('.'+prefix+'-image-'+currentImageIndex);
+
+                    var attributes = settings.imageAttributes[currentImageIndex] || null;
+                    if(attributes !== null) {
+                        curImg.css(attributes);
+                    }
+                    console.log(attributes);
+
                     curImg.css({ opacity:0 });
                     curImg.stop().animate({
                         opacity: 1},
